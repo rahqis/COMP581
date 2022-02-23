@@ -1,4 +1,8 @@
 #!/usr/bin/env pybricks-micropython
+# Kaylee Tackett PID: 730245649
+# Rahqi Sarsour  PID: 730392621
+
+#be sure to run "new project" (not lab 1) on brick. It is this code!
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
                                  InfraredSensor, UltrasonicSensor, GyroSensor)
@@ -6,9 +10,6 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.media.ev3dev import SoundFile, ImageFile
 import math
-
-# This program requires LEGO EV3 MicroPython v2.0 or higher.
-# Click "Open user guide" on the EV3 extension tab for more information.
 
 
 # Create your objects here.
@@ -22,7 +23,7 @@ init_distance = angry_eyes.distance()/1000
 curr_distance = init_distance
 diameter = .06  # Meters
 circum = diameter * math.pi
-phase_1_time = (1.2 / (485/360 * circum))
+phase_1_time = (1.2 / (500/360 * circum))
 
 phase_3_time = (.5 / (300/360 * circum))
 start_time = 0
@@ -33,10 +34,11 @@ start_time = 0
 def first_press():
     watch = StopWatch()
     while True:
-        left_motor.run(485)
-        right_motor.run(485)
+        left_motor.run(500)
+        right_motor.run(500)
 
-        if watch.time()/1000 > phase_1_time+0.6:
+# adding 0.59 to distance to account for robot imperfections
+        if watch.time()/1000 > phase_1_time+0.59:
             left_motor.hold()
             right_motor.hold()
             break
@@ -47,7 +49,8 @@ def first_press():
 
 def second_press():
     while True:
-        if angry_eyes.distance()/1000 < .57:
+        # assessing distance from wall
+        if angry_eyes.distance()/1000 < .575:
             break
         watch = StopWatch()
         while True:
@@ -76,16 +79,18 @@ def second_press():
 
 def third_press():
     while True:
+        # running into wall
         left_motor.run(500)
         right_motor.run(500)
         if bumper.pressed():
             watch = StopWatch()
             while True:
+                # reversing from wall
                 left_motor.run(-300)
                 right_motor.run(-300)
 
-                if watch.time()/1000 > phase_3_time+(0.5):
-                    print("s3")
+                if watch.time()/1000 > phase_3_time+(0.49):
+                   # print("s3")
                     break
             break
 
